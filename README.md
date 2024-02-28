@@ -1,6 +1,6 @@
 # Demo img
-<img style="width: 500px" src="https://github.com/WeansHHN/iGG-By-HHNiOS/blob/main/photo_2023-05-16_15-32-42.jpg?raw=true">
-<img style="width: 500px" src="https://github.com/WeansHHN/iGG-By-HHNiOS/blob/main/photo_2023-05-16_15-32-42.jpg?raw=true">
+<img style="width: 500px" src="https://github.com/WeansHHN/info-iDevice/blob/main/demo1.jpg?raw=true">
+<img style="width: 500px" src="https://github.com/WeansHHN/info-iDevice/blob/main/demo2.jpg?raw=true">
 # Mô tả
 
 Đây là một ứng dụng iOS sử dụng ImGui để tạo giao diện người dùng. Ứng dụng này cung cấp một số chức năng chính sau:
