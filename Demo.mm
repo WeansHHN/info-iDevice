@@ -39,7 +39,7 @@ bool isJailbroken() {
 
 
 
-#import "Files/info.h"
+#import "iDevice.h"
 
 if (ImGui::BeginTabItem(ICON_FA_USER" Thông tin"))
 {               
