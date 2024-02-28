@@ -1,9 +1,3 @@
-//
-// Create By DS Gaming
-// Shopdsgm.vn
-// Creation date: 15/04/2023 - Share date: 03/01/2024
-//
-
 #import <UIKit/UIKit.h>
 #import <sys/utsname.h>
 #include <thread>
@@ -43,11 +37,7 @@ bool isJailbroken() {
     return false;
 }
 
-if (MenDeal == true)
-    {                
-    ImGui::Begin(ENCRYPT(ICON_FA_ROCKET " HHNiOS Menu AOV!"), &MenDeal);
-        if (ImGui::BeginTabBar("TabBar"))
-{
+
 
 #import "Files/info.h"
 
@@ -120,8 +110,3 @@ if (strlen(free_ram_str) > 0) {
     ImGui::SameLine();
     ImGui::TextColored(ImVec4(1, 0, 0, 1), "%s", free_ram_str);
 }
-
-ImGui::EndTabItem();
-} // hết 1 tab
-
-}}
