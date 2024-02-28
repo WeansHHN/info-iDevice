@@ -67,4 +67,4 @@ bool isJailbroken() {
 
 # Đóng góp
 
-Chúng tôi rất hoan nghênh mọi đóng góp từ cộng đồng. Nếu bạn muốn đóng góp vào dự án này, vui lòng gửi một pull request.
+Mình rất hoan nghênh mọi đóng góp từ cộng đồng. Nếu bạn muốn đóng góp vào dự án này, vui lòng gửi một pull request.
