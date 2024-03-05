@@ -31,18 +31,20 @@ bool isJailbroken() {
     if ([[NSFileManager defaultManager] fileExistsAtPath:@"/etc/apt"]) {
         return true;
     }
+
     if ([[NSFileManager defaultManager] fileExistsAtPath:@"/usr/sbin/sshd"]) {
+        return true;
+    }
+
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cydia://package/Check.Packages"]]) {
         return true;
     }
     //Rootless
     if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb/usr/sbin/sshd"]) {
         return true;
     }
-    if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb"]) {
-        return true;
-    }
 
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cydia://package/Check.Packages"]]) {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/jb"]) {
         return true;
     }
 
