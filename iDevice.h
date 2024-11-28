@@ -1,58 +1,78 @@
-std::string namedv = [[UIDevice currentDevice] name].UTF8String;
-NSDate *now = [NSDate date];
-NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-[dateFormatter setDateFormat:@"EEEE dd/MM/yyyy"];
-NSString *dateString = [dateFormatter stringFromDate:now];
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#include <sys/sysctl.h>
+#include <mach/mach.h>
+#include <unistd.h>
 
-UIDevice *device = [UIDevice currentDevice];
-device.batteryMonitoringEnabled = YES;
+@interface DeviceInfo : NSObject
 
-float batteryLevel = device.batteryLevel * 100;
-NSString *chargingStatus = @"";
-if (device.batteryState == UIDeviceBatteryStateCharging) {
-    chargingStatus = @"- Đang Sạc";
-} else if (device.batteryState == UIDeviceBatteryStateFull) {
-    chargingStatus = @"- Đầy Pin";
-} else {
-    chargingStatus = @"- Đã Ngắt Sạc";
++ (NSString *)deviceName;
++ (NSString *)currentDate;
++ (NSString *)chargingStatus;
++ (float)batteryLevel;
+
++ (long)numberOfCores;
++ (NSDictionary<NSString *, NSNumber *> *)memoryUsage;
+
+@end
+
+@implementation DeviceInfo
+
++ (NSString *)deviceName {
+    return [[UIDevice currentDevice] name];
 }
 
-long numCores;
-size_t len = sizeof(numCores);
-sysctlbyname("hw.ncpu", &numCores, &len, NULL, 0);
-
-kern_return_t kr;
-task_info_data_t tinfo;
-mach_msg_type_number_t task_info_count = TASK_INFO_MAX;
-
-kr = task_info(mach_task_self(),
-               TASK_BASIC_INFO,
-               (task_info_t)tinfo,
-               &task_info_count);
-if (kr != KERN_SUCCESS) {
-    // Xử lý lỗi tại đây
++ (NSString *)currentDate {
+    NSDate *now = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"EEEE dd/MM/yyyy"];
+    return [dateFormatter stringFromDate:now];
 }
 
-task_basic_info_t basic_info;
-thread_array_t thread_list;
-mach_msg_type_number_t thread_count;
++ (NSString *)chargingStatus {
+    UIDevice *device = [UIDevice currentDevice];
+    device.batteryMonitoringEnabled = YES;
 
-thread_info_data_t thinfo;
-mach_msg_type_number_t thread_info_count;
+    switch (device.batteryState) {
+        case UIDeviceBatteryStateCharging:
+            return @"- Đang Sạc";
+        case UIDeviceBatteryStateFull:
+            return @"- Đầy Pin";
+        case UIDeviceBatteryStateUnplugged:
+        case UIDeviceBatteryStateUnknown:
+        default:
+            return @"- Đã Ngắt Sạc";
+    }
+}
 
-basic_info = (task_basic_info_t)tinfo;
++ (float)batteryLevel {
+    return [UIDevice currentDevice].batteryLevel * 100.0;
+}
 
-// Calculate RAM usage
-natural_t used_ram = (basic_info->resident_size) / 1024 / 1024;
-// Calculate available RAM
-natural_t free_ram = ([NSProcessInfo processInfo].physicalMemory) / 1024 / 1024 - used_ram;
-char used_ram_str[100];
-char free_ram_str[100];
++ (long)numberOfCores {
+    size_t size = sizeof(long);
+    long numCores = 0;
+    sysctlbyname("hw.ncpu", &numCores, &size, NULL, 0);
+    return numCores;
+}
 
-ImVec4 used_color = ImVec4(0.5f, 0, 0.5f, 1);
-ImVec4 ram_color = ImVec4(1, 1, 0, 1);
++ (NSDictionary<NSString *, NSNumber *> *)memoryUsage {
+    task_basic_info_data_t tinfo;
+    mach_msg_type_number_t tinfo_count = TASK_BASIC_INFO_COUNT;
 
-long num_cpus = sysconf(_SC_NPROCESSORS_ONLN);
-long page_size = sysconf(_SC_PAGESIZE);
-long num_pages = sysconf(_SC_PHYS_PAGES);
-long ram_total = num_pages * page_size;
+    kern_return_t kr = task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&tinfo, &tinfo_count);
+    if (kr != KERN_SUCCESS) {
+        return nil;
+    }
+
+    natural_t usedRAM = (tinfo.resident_size) / 1024 / 1024;
+    natural_t totalRAM = (natural_t)([NSProcessInfo processInfo].physicalMemory / 1024 / 1024);
+    natural_t freeRAM = totalRAM - usedRAM;
+
+    return @{
+        @"UsedRAM": @(usedRAM),
+        @"FreeRAM": @(freeRAM)
+    };
+}
+
+@end
